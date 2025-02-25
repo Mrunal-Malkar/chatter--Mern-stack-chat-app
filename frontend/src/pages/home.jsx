@@ -8,7 +8,7 @@ const Home = () => {
       <Navbar />
 
       <div className="w-full h-[92vh] flex bg-[#288C9B] justify-center items-center">
-        <div className='h-full md:h-11/12 2xl:w-10/12 w-full bg-teal-500 flex'>
+        <div className='h-full  w-full bg-teal-500 flex'>
 
 
           {/* the start of inner divs */}
