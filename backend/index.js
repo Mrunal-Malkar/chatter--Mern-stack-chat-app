@@ -1,33 +1,32 @@
 import express from "express";
-import {Server} from "socket.io";
-import {createServer} from "http";
-import signup_route from "./routes/sign-up.routes.js";
- 
+import homeRoute from "./routes/home.routes.js"
+
 const app=express();
+app.use(express.json());
+
 const PORT=3000;
 
-const server=createServer(app);
-const io=new Server(server,{
-    cors:{
-        origin:"http://localhost:5173",
-        methods:["GET","POST"]
-    }
-})
+// import {Server} from "socket.io";
+// import {createServer} from "http";
+// const server=createServer(app);
+// const io=new Server(server,{
+//     cors:{
+//         origin:"http://localhost:5173",
+//         methods:["GET","POST"]
+//     }
+// })
 
-io.on("connection",(socket)=>{
-    console.log("connected to the user at backend");
+// io.on("connection",(socket)=>{
+//     console.log("connected to the user at backend");
 
-    socket.on("message",(message)=>{
-        io.emit("msg",message);
-    })
+//     socket.on("message",(message)=>{
+//         io.emit("msg",message);
+//     })
 
-})
+// })
 
-app.use("/index",signup_route)
-app.get("/",(req,res)=>{
-    res.send("home");
-})
+app.use("/",homeRoute)
 
-server.listen(PORT,()=>{
+app.listen(PORT,()=>{
     console.log("sever is running on port",PORT);
 })
