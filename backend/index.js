@@ -1,8 +1,10 @@
 import express from "express";
 import homeRoute from "./routes/home.routes.js"
+import signUpRoute from "./routes/sign-up.routes.js"
 
 const app=express();
 app.use(express.json());
+app.use(express.urlencoded({extended:true}));
 
 const PORT=3000;
 
@@ -25,7 +27,8 @@ const PORT=3000;
 
 // })
 
-app.use("/",homeRoute)
+app.use("/home",homeRoute);
+app.use("/signup",signUpRoute);
 
 app.listen(PORT,()=>{
     console.log("sever is running on port",PORT);

@@ -1,11 +1,10 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Home from"./pages/home.jsx"
-import Signup from './pages/signup.jsx'
-import Login from './pages/login.jsx'
+import { lazy, useState } from 'react'
 import {Routes,Route} from "react-router"
+import './App.css'
+
+const Home=lazy(()=>import("./pages/Home.jsx"))
+const Login=lazy(()=>import("./pages/login.jsx"))
+const Signup=lazy(()=>import("./pages/signup.jsx"))
 
 function App() {
   const [count, setCount] = useState(0)
