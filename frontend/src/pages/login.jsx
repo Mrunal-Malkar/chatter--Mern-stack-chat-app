@@ -31,7 +31,7 @@ const Login = () => {
 
         <p>
           <span className='text-xl text-zinc-200 ms-2'>or </span>
-          <span className='text-xl text-blue-400'><NavLink to={"/signup"}>Sign-up</NavLink></span>
+          <span className='text-2xl text-blue-400 font-semibold'><NavLink to={"/signup"}>Sign-up </NavLink></span>
           <span className='text-xl text-zinc-200'>instead</span>
         </p>
 

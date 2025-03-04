@@ -1,9 +1,33 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router'
 
 const Signup = () => {
+
+  const [profileimg,setProfileimg]=useState("/a.jpg");
+
+
+  const handleImage=(event)=>{
+    try{
+      let image=event.target.files[0];
+      if(image){
+      
+      
+
+      // last work
+        let imageUrl=URL.createObjectURL(image);
+        setProfileimg(imageUrl);
+      }else{
+        return "No image found"
+      }
+
+    }catch(err){
+      return "error in uploading image"
+    }
+    
+  }
+
   return (
-    <div className='w-full min-h-[100vh] flex justify-center algin-middle'>
+    <div className='w-full min-h-[100vh] flex justify-center algin-middle items-center md:flex-row flex-col'>
 
       <div className='w-[300px] md:w-[400px] flex flex-col justify-center items-center'>
 
@@ -17,13 +41,12 @@ const Signup = () => {
             
             <h3 className='text-2xl font-semibold self-center mb-2 text-gray-50'>Profile-Pic</h3>
             <div className='flex flex-col self-center w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-[50%] border-3 border-black bg-gray-800 overflow-hidden'>
-              <img src="/black-blue.avif" className="w-ful h-full" alt="" />
+              <img src={profileimg} className="w-full h-full" alt="" />
             </div>
             
             <label className="md:bottom-18 md:right-10 relative bottom-15 right-6 p-3 flex flex-start rounded-3xl border-2 bg-gray-900 border-gray-900 cursor-pointer">
             <i className='fa-solid fa-camera relative text-2xl'></i>
-            <input type="file" className='hidden'>
-            </input>
+            <input type="file" name='profilepic' className='hidden' accept='image' onChange={handleImage}></input>
             </label>
 
           </div>
@@ -50,13 +73,13 @@ const Signup = () => {
 
         </form>
 
-        <p>
-          <span className='text-xl text-zinc-200 ms-2'>or </span>
-          <span className='text-xl text-blue-400'><NavLink to={"/login"}>Log-in</NavLink> </span>
-          <span className='text-xl text-zinc-200'>instead</span>
-        </p>
 
       </div>
+        <p>
+          <span className='md:text-2xl text-xl text-zinc-200 ms-2'>or </span>
+          <span className='md:text-2xl text-blue-400 font-semibold'><NavLink to={"/login"}>Log-in</NavLink> </span>
+          <span className='md:text-2xl text-xl text-zinc-200'>instead</span>
+        </p>
 
     </div>
   )
