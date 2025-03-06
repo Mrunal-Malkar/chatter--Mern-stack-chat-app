@@ -1,10 +1,13 @@
 import express from "express";
 import homeRoute from "./routes/home.routes.js"
 import signUpRoute from "./routes/sign-up.routes.js"
+import cors from "cors"
 
 const app=express();
+app.use(cors({origin:"http://localhost:5173/"}));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use("/uploads",express.static("uploads"))
 
 const PORT=3000;
 

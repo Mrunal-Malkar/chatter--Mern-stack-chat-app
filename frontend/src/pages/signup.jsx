@@ -11,9 +11,6 @@ const Signup = () => {
       let image=event.target.files[0];
       if(image){
       
-      
-
-      // last work
         let imageUrl=URL.createObjectURL(image);
         setProfileimg(imageUrl);
       }else{
@@ -35,7 +32,7 @@ const Signup = () => {
           Sign-up
         </h1>
 
-        <form action="http://localhost:3000/signup" method="POST" className='flex flex-col gap-y-4 p-4 bg-[#2D232E] w-full text-xl rounded-xl border-2 drop-shadow-2xl border-gray-700'>
+        <form action="http://localhost:3000/signup" method="POST" encType='multipart/form-data' className='flex flex-col gap-y-4 p-4 bg-[#2D232E] w-full text-xl rounded-xl border-2 drop-shadow-2xl border-gray-700'>
 
           <div className='flex justify-end items-end flex-col'>
             
@@ -46,7 +43,7 @@ const Signup = () => {
             
             <label className="md:bottom-18 md:right-10 relative bottom-15 right-6 p-3 flex flex-start rounded-3xl border-2 bg-gray-900 border-gray-900 cursor-pointer">
             <i className='fa-solid fa-camera relative text-2xl'></i>
-            <input type="file" name='profilepic' className='hidden' accept='image' onChange={handleImage}></input>
+            <input type="file" name='profilepic' className='hidden' onChange={handleImage}></input>
             </label>
 
           </div>
