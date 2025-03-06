@@ -1,26 +1,17 @@
 import React, { useState } from 'react'
 import { NavLink } from 'react-router'
+import { Cloudinary } from '@cloudinary/url-gen';
 
 const Signup = () => {
+  const [avatarNo,setAvatarNo]=useState(1);
 
-  const [profileimg,setProfileimg]=useState("/a.jpg");
-
-
-  const handleImage=(event)=>{
+  const handleImage=async()=>{
     try{
-      let image=event.target.files[0];
-      if(image){
-      
-        let imageUrl=URL.createObjectURL(image);
-        setProfileimg(imageUrl);
-      }else{
-        return "No image found"
-      }
-
+      let no=Math.round(Math.random()*100);
+      setAvatarNo(no);
     }catch(err){
       return "error in uploading image"
     }
-    
   }
 
   return (
@@ -32,18 +23,18 @@ const Signup = () => {
           Sign-up
         </h1>
 
-        <form action="http://localhost:3000/signup" method="POST" encType='multipart/form-data' className='flex flex-col gap-y-4 p-4 bg-[#2D232E] w-full text-xl rounded-xl border-2 drop-shadow-2xl border-gray-700'>
+        <form action="http://localhost:3000/signup" method="POST" className='flex flex-col gap-y-4 p-4 bg-[#2D232E] w-full text-xl rounded-xl border-2 drop-shadow-2xl border-gray-700'>
 
           <div className='flex justify-end items-end flex-col'>
             
             <h3 className='text-2xl font-semibold self-center mb-2 text-gray-50'>Profile-Pic</h3>
             <div className='flex flex-col self-center w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-[50%] border-3 border-black bg-gray-800 overflow-hidden'>
-              <img src={profileimg} className="w-full h-full" alt="" />
+              <img src={`https://avatar.iran.liara.run/public/${avatarNo}`} className="w-full h-full" alt="" />
             </div>
             
             <label className="md:bottom-18 md:right-10 relative bottom-15 right-6 p-3 flex flex-start rounded-3xl border-2 bg-gray-900 border-gray-900 cursor-pointer">
-            <i className='fa-solid fa-camera relative text-2xl'></i>
-            <input type="file" name='profilepic' className='hidden' onChange={handleImage}></input>
+            <i onClick={handleImage} className='fa-solid fa-camera relative text-2xl'></i>
+            <input type="text" name='avatarno' defaultValue={avatarNo} value={avatarNo} className='hidden' />
             </label>
 
           </div>
@@ -61,7 +52,7 @@ const Signup = () => {
 
           <div className='flex flex-col m-1 w-full'>
             <label htmlFor="password" className='text-gray-300'>Password</label>
-            <input type="text" className='text-xl md:text-2xl rounded-xl p-1 outline-none' name='password' />
+            <input type="password" className='text-xl md:text-2xl rounded-xl p-1 outline-none' name='password' />
           </div>
 
           <div className='flex w-full justify-center items-center '>
