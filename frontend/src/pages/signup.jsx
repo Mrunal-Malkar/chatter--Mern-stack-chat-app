@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
-import { NavLink } from 'react-router'
+import { NavLink, useSearchParams } from 'react-router'
 import { Cloudinary } from '@cloudinary/url-gen';
 
 const Signup = () => {
   const [avatarNo,setAvatarNo]=useState(1);
+
+  let [searchparams]=useSearchParams();
+  let errorAuth=searchparams.get("error");
 
   const handleImage=async()=>{
     try{
@@ -21,9 +24,10 @@ const Signup = () => {
 
         <h1 className='text-4xl font-bold text-blue-400 m-2'>
           Sign-up
+          {errorAuth && <h1 className='text-red-700 text-[20px]'>Error:{errorAuth}</h1>}
         </h1>
 
-        <form action="http://localhost:3000/signup" method="POST" className='flex flex-col gap-y-4 p-4 bg-[#2D232E] w-full text-xl rounded-xl border-2 drop-shadow-2xl border-gray-700'>
+        <form action="http://localhost:3000/auth/signup" method="POST" className='flex flex-col gap-y-4 p-4 bg-[#2D232E] w-full text-xl rounded-xl border-2 drop-shadow-2xl border-gray-700'>
 
           <div className='flex justify-end items-end flex-col'>
             
@@ -33,8 +37,8 @@ const Signup = () => {
             </div>
             
             <label className="md:bottom-18 md:right-10 relative bottom-15 right-6 p-3 flex flex-start rounded-3xl border-2 bg-gray-900 border-gray-900 cursor-pointer">
-            <i onClick={handleImage} className='fa-solid fa-camera relative text-2xl'></i>
-            <input type="text" name='avatarno' defaultValue={avatarNo} value={avatarNo} className='hidden' />
+            <i onClick={handleImage} className="fa-solid fa-shuffle text-2xl"></i>
+            <input type="hidden" name='avatarno' defaultValue={avatarNo} className='hidden' />
             </label>
 
           </div>

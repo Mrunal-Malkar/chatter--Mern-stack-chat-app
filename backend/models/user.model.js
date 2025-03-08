@@ -1,7 +1,4 @@
 import mongoose from "mongoose"
-import { connectDb } from "../config/connectDb";
-
-connectDb();
 
 const userScheema=new mongoose.Schema({
     username:{
@@ -17,9 +14,9 @@ const userScheema=new mongoose.Schema({
         type:String,
         require:true,
     },
-    profilepic:{
-        type:String,
-        default:"",
+    avatarno:{
+        type:Number,
+        default:1
     },
     conncetedPeoples:{
         type:Array,

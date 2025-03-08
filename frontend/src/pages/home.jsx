@@ -1,11 +1,43 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import axios from "axios";
 import Navbar from '../components/navbar'
 import "./../stylesheets/home.css"
+import { Navigate, redirect, useNavigate } from 'react-router';
 
 const Home = () => {
+  const [isAuthenticated,setIsAuthenticated]=useState(null);
+  const navigate=useNavigate();
+
+  useEffect(() => {
+    try{
+     
+    const Check=async()=>{
+    const check=await axios.get("http://localhost:3000/",{withCredentials:true})
+    .then(
+      ()=>{setIsAuthenticated(true)}
+    )
+    .catch((err)=>{  navigate("/login")});
+    }
+
+    Check()
+
+  }catch(err){
+    
+    console.log("error in authentication:",err);
+    navigate("/login");
+  
+  }
+  }, [navigate]);
+
+  if(isAuthenticated==null){
+    return navigate("/loading")
+  }
+
+
+
   return (
     <>
-      <Navbar />
+     <Navbar />
 
       <div className="w-full h-[92vh] flex bg-[#288C9B] justify-center items-center">
         <div className='h-full  w-full bg-teal-500 flex'>

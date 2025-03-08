@@ -2,7 +2,7 @@ import { lazy, useState } from 'react'
 import {Routes,Route} from "react-router"
 import './App.css'
 
-const Home=lazy(()=>import("./pages/Home.jsx"))
+const Home=lazy(()=>import("./pages/home.jsx"))
 const Login=lazy(()=>import("./pages/login.jsx"))
 const Signup=lazy(()=>import("./pages/signup.jsx"))
 

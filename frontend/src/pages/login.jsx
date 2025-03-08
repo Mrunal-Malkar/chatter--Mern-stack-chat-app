@@ -1,7 +1,11 @@
-import React from 'react'
-import { NavLink } from 'react-router'
+import React, { useState } from 'react'
+import { NavLink, useSearchParams } from 'react-router'
 
 const Login = () => {
+
+  let [searchparams]=useSearchParams();
+  let errorAuth=searchparams.get("error");
+
   return (
     <div className='w-full min-h-[100vh] flex justify-center algin-middle'>
 
@@ -9,9 +13,10 @@ const Login = () => {
 
         <h1 className='text-4xl font-bold text-blue-400 m-2'>
           Log-in
+        {errorAuth && <h1 className='text-red-700 text-[20px]'>Error:{errorAuth}</h1>}
         </h1>
 
-        <form action="" className='flex flex-col gap-y-4 p-4 bg-[#2D232E] w-full text-xl rounded-xl border-2 border-gray-900'>
+        <form action="http://localhost:3000/auth/login" method='POSt' className='flex flex-col gap-y-4 p-4 bg-[#2D232E] w-full text-xl rounded-xl border-2 border-gray-900'>
 
           <div className='flex flex-col m-1 w-full'>
             <label htmlFor="email" className='text-gray-300'>Email:</label>
