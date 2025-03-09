@@ -1,5 +1,5 @@
 import express from "express"
-import {checkUser, LogInManager, signUpController} from "../controllers/auth.controller.js"
+import {LogInManager, signUpController} from "../controllers/auth.controller.js"
 
 const route=express.Router();
 
@@ -9,6 +9,6 @@ route.get("/",(req,res)=>{
 
 route.post("/signup",signUpController);
 route.post("/login",LogInManager);
-route.post("/authonticate",checkUser);
+// route.post("/authonticate",checkUser);
 
 export default route

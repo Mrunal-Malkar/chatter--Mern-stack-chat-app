@@ -1,10 +1,10 @@
 import express from "express";
 import { connectDb } from "./config/connectDb.js";
-import homeRoute from "./routes/home.routes.js"
 import authRoute from "./routes/auth.routes.js"
 import cors from "cors"
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv"
+import { checkUser } from "./middleware/checkuser.js";
 
 const app=express();
 app.use(cors({origin:"http://localhost:5173",credentials:true}))
@@ -39,8 +39,11 @@ const PORT=3000;
 
 // })
 
-app.use("/home",homeRoute);
 app.use("/auth",authRoute);
+
+app.use("/",checkUser,(req,res)=>{
+    res.status(200);
+});
 
 app.listen(PORT,()=>{
     console.log("sever is running on port",PORT);

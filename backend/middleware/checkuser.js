@@ -1,16 +1,28 @@
+import User from "./../models/user.model.js"
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+
 
 //for cheking user as a middleware 
-export const checkUser=(req,res,next)=>{
-    try{
-    const token=req.cookies.token;
-    
-    let isAllowed=jwt.verify(token,process.env.SECRETKEY);
+export const checkUser = async (req, res, next) => {
+    try {
+        const token = req.cookies.token;
+        console.log("this is token:",token)
 
-    if(!isAllowed){return res.redirect("http://localhost:5173/login?error=please login")};
-    next();
-}catch(err){
+        if (!token) { return res.status(401).json({ error: "unauthorised request,please login!" }) }
 
-    console.log("error in checking if the token is valid:",err);
-    return res.res.redirect(`http://localhost:5173/login?error=error:${err}`);
+        let isAllowed = await jwt.verify(token, process.env.SECRETKEY);
 
-}}
+        if (!isAllowed) { return res.status(401).json({ error: "you are not authorised, please login" }) };
+
+        req.user = isAllowed
+
+        next();
+
+    } catch (err) {
+
+        console.log("error in checking if the token is valid:", err);
+        return res.status(500).json({ error: err });
+
+    }
+}

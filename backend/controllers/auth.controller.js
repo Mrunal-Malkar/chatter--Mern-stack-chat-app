@@ -4,69 +4,70 @@ import jwt from "jsonwebtoken"
 
 
 //for signup
-export const signUpController=async(req,res)=>{
-    try{
-    
-    const {username,email,password,avatarno}=req.body;
-    if(!username || !email || !password || !avatarno){return res.redirect("http://localhost:5173/signup?error=in authontication, please fill the form!")}
-    
-    const saltRounds=10;
-    const salt=await bcrypt.genSalt(saltRounds);
-    const securedPassword=await bcrypt.hash(password,salt);
-    
-    const checkUser=await User.findOne({email:email});
-    if(checkUser){return res.redirect("http://localhost:5173/signup?error=user already exist")}
+export const signUpController = async (req, res) => {
+    try {
 
-    const newUser=await User.create({
-        username:username,
-        email:email, 
-        password:securedPassword,
-        avatarno:avatarno,
-    })
+        const { username, email, password, avatarno } = req.body;
+        if (!username || !email || !password || !avatarno) { return res.status(404).json({ error: "error in authontication please fill the form!" }) }
 
-    const Token=await jwt.sign({id:newUser._id},process.env.SECRETKEY,{expiresIn:"48h"});
-    req.user=newUser;
-    res.cookie("token", Token, {
-        httpOnly: true,
-        sameSite: "Strict", 
-        maxAge: 1000 * 60 * 60 * 48,
-    });
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        const securedPassword = await bcrypt.hash(password, salt);
 
-    return res.redirect("http://localhost:5173");
+        const checkUser = await User.findOne({ email: email });
+        if (checkUser) { return res.status(404).json({ error: "user already exist" }) }
 
-}catch(err){
-    
-    console.log("Authentication error:",err);
-    res.status(404).json({message:"server error",error:err});
- 
+        const newUser = await User.create({
+            username: username,
+            email: email,
+            password: securedPassword,
+            avatarno: avatarno,
+        })
+
+        const Token = await jwt.sign({ id: newUser._id }, process.env.SECRETKEY, { expiresIn: "48h" });
+        req.user = newUser;
+        res.cookie("token", Token, {
+            httpOnly: true,
+            sameSite: "Strict",
+            maxAge: 1000 * 60 * 60 * 48,
+        });
+
+        return res.status(200).json({ message: "succesfully signed up!" });
+
+    } catch (err) {
+
+        console.log("Authentication error:", err);
+        res.status(404).json({ message: "server error", error: err });
+
+    }
 }
-} 
 
 //for login
-export const LogInManager=async(req,res)=>{
-    try{
-    const {email,password}=req.body;
-    if(!email || !password){return res.redirect("http://localhost:5173/login?error=please fill the form")}
-    
-    let user=await User.findOne({email:email});
-    if(!user){return res.redirect("http://localhost:5173/signup?error=No user found!")};
+export const LogInManager = async (req, res) => {
+    try {
+        console.log("you hitted log in manager")
+        const { email, password } = req.body;
+        if (!email || !password) { return res.status(400).json({ error: "please fill the form!" }) }
 
-    let securedPassword=user.password;
-    const isUser=await bcrypt.compare(password,securedPassword); 
-    if(!isUser){return res.redirect("http://localhost:5173/login?error=please fill correct details")}
-    const Token=await jwt.sign({id:user._id},process.env.SECRETKEY,{expiresIn:"48h"});
+        let user = await User.findOne({ email: email });
+        if (!user) { return res.status(404).json({ error: "No user found!" }) };
 
-    res.cookie("token",Token,{
-        httpOnly:true,
-        sameSite:"Strict",
-        maxAge:1000*60*60*48,
-    })
+        let securedPassword = user.password;
+        const isUser = await bcrypt.compare(password, securedPassword);
+        if (!isUser) { return res.status(401).json({ error: "incorrect details!" }) }
+        const Token = await jwt.sign({ id: user._id }, process.env.SECRETKEY, { expiresIn: "48h" });
 
-    return res.redirect("http://localhost:5173");
+        res.cookie("token", Token, {
+            httpOnly: true,
+            sameSite: "Strict",
+            maxAge: 1000 * 60 * 60 * 48,
+        })
+        console.log("checked from login and setted the cookie:",Token);
+        return res.status(200).json({ message: "succesfully loged-in!" });
 
-}catch(err){
+    } catch (err) {
 
-    res.redirect(`http://localhost:5173/login?error=login error:${err}`);
+        res.status(500).json({ message: "server error", error: err });
 
-}
-}
+    }
+} 
