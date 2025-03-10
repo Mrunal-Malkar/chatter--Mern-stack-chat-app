@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import axios from "axios";
 import Navbar from '../components/navbar'
 import "./../stylesheets/home.css"
-import { Navigate, redirect, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 const Home = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -13,7 +13,9 @@ const Home = () => {
       try {
         console.log("running check")
 
-        const check = await axios.get("http://localhost:3000", { withCredentials: true })
+        const check = await axios.get("http://localhost:3000", { withCredentials: true });
+        const user= await axios.get("http://localhost:3000/getuser",{withCredentials:true});
+        console.log("this is the user:",user);
 
         if (check.status !== 200) { 
           setIsAuthenticated(false);

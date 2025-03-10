@@ -40,6 +40,13 @@ const PORT=3000;
 // })
 
 app.use("/auth",authRoute);
+app.get("/getuser",(req,res)=>{
+    let user=req.user;
+    console.log("this is the user at backen:",user);
+    if(user){
+    res.status(200).json({user:user})}
+    else{res.status(399).json({message:"No user found"})}
+});
 
 app.use("/",checkUser,(req,res)=>{
     res.status(200);
