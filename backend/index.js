@@ -1,24 +1,23 @@
 import express from "express";
 import { connectDb } from "./config/connectDb.js";
-import authRoute from "./routes/auth.routes.js"
-import cors from "cors"
+import authRoute from "./routes/auth.routes.js";
+import cors from "cors";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 import { checkUser } from "./middleware/checkuser.js";
 
-const app=express();
-app.use(cors({origin:"http://localhost:5173",credentials:true}))
+const app = express();
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.urlencoded({extended:true}));
-app.use("/uploads",express.static("uploads")) 
-app.use(express.urlencoded({ extended: true })); 
+app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static("uploads"));
+app.use(express.urlencoded({ extended: true }));
 
-
-dotenv.config()
+dotenv.config();
 connectDb();
 
-const PORT=3000;
+const PORT = 3000;
 
 // import {Server} from "socket.io";
 // import {createServer} from "http";
@@ -39,19 +38,22 @@ const PORT=3000;
 
 // })
 
-app.use("/auth",authRoute);
-app.get("/getuser",(req,res)=>{
-    let user=req.user;
-    console.log("this is the user at backen:",user);
-    if(user){
-    res.status(200).json({user:user})}
-    else{res.status(399).json({message:"No user found"})}
+app.use("/auth", authRoute);
+
+app.get("/getuser",checkUser,(req, res) => {
+  let user = req.user;
+  console.log("this is the user at backen:", user);
+  if (user) {
+    res.status(200).json({ user: user });
+  } else {
+    res.status(399).json({ message: "No user found" });
+  }
 });
 
-app.use("/",checkUser,(req,res)=>{
-    res.status(200);
-});
+app.get("/", checkUser, (req, res) => {
+  res.status(200).json({ message: "User is authenticated" }); 
+}); 
 
-app.listen(PORT,()=>{
-    console.log("sever is running on port",PORT);
-})
+app.listen(PORT, () => {
+  console.log("sever is running on port", PORT);
+});
