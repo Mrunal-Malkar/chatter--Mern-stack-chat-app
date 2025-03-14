@@ -1,37 +1,53 @@
 import mongoose from "mongoose";
 
-const userScheema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    require: true,
+    required: true,
   },
   email: {
     type: String,
-    require: true,
+    required: true,
     unique: true,
   },
   password: {
     type: String,
-    require: true,
+    required: true,
   },
   avatarno: {
     type: Number,
     default: 1,
   },
-  connectedPeoples: {
-    type: Array,
-    dafault: [],
-  },
-  groupJoined: {
-    type: Array,
-    dafault: [],
-  },
+  connections: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  receivedRequests: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  sentRequests: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  groupJoined: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Group",
+    },
+  ],
   isAdmin: {
     type: Boolean,
     default: false,
   },
 });
 
-const User = mongoose.model("User", userScheema);
+const User = mongoose.model("User", userSchema);
 
 export default User;

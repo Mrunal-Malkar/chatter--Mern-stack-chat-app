@@ -1,14 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/navbar";
+import {io} from "socket.io-client";
 import "./../stylesheets/home.css";
 import { ToastContainer, toast } from "react-toastify";
 import ConnectionModal from "../components/modal";
 
 const ModalCont = createContext();
+const socket=io("http://localhost:3000");
 
 const Home = () => {
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState("loading...");
   const [avatarno, setAvatarNo] = useState(null);
@@ -17,6 +18,11 @@ const Home = () => {
   const [users, setUsers] = useState("loading...");
   const [isOpen, setIsOpen] = useState(false);
 
+
+useEffect(()=>{
+  socket.on("msg",(msg)=>console.log("message received:",msg));
+},[])
+  
   const GetUser = async () => {
     try {
       console.log("thiss is the username:", import.meta.env.VITE_Base_Url);
@@ -27,7 +33,7 @@ const Home = () => {
       setUsername(user.data.user.username);
       setEmail(user.data.user.email);
       setAvatarNo(user.data.user.avatarno);
-
+      
       setIsAuthenticated(true);
     } catch (err) {
       toast.error("please login or signup!");
@@ -36,7 +42,7 @@ const Home = () => {
       }, 1500);
     }
   };
-
+  
   const GetUsers = async () => {
     try {
       const allusers = await axios.get(`${import.meta.env.BASE_URL}/getusers`, {
@@ -44,10 +50,10 @@ const Home = () => {
       });
     } catch (err) {}
   };
-
+  
   const handleSend=async()=>{
     if(message!==""){
-      
+      socket.emit("sendmessage",message);      
     }
   }
 
