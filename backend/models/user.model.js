@@ -18,7 +18,7 @@ const userScheema = new mongoose.Schema({
     type: Number,
     default: 1,
   },
-  conncetedPeoples: {
+  connectedPeoples: {
     type: Array,
     dafault: [],
   },

@@ -12,6 +12,7 @@ const Home = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState("loading...");
   const [avatarno, setAvatarNo] = useState(null);
+  const [message,setMessage] =useState("");
   const [email, setEmail] = useState("");
   const [users, setUsers] = useState("loading...");
   const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +44,12 @@ const Home = () => {
       });
     } catch (err) {}
   };
+
+  const handleSend=async()=>{
+    if(message!==""){
+      
+    }
+  }
 
   useEffect(() => {
     GetUser();
@@ -125,9 +132,10 @@ const Home = () => {
                 <input
                   type="text"
                   placeholder="Type a message"
+                  onChange={(e)=>setMessage(e.target.value)}
                   className="min-w-[90%] ps-3 max-w-[90%] h-full rounded-xl outline-none border-2 border-gray-400"
                 />
-                <div className="min-w-[5%] max-w-[5%] flex justify-center items-center">
+                <div onClick={handleSend} className="min-w-[5%] max-w-[5%] flex justify-center items-center">
                   <i class="fa-solid fa-arrow-up text-3xl"></i>
                 </div>
               </div>

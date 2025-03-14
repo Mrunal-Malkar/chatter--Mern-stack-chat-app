@@ -60,6 +60,14 @@ app.get("/getusers",checkUser,async(req,res)=>{
   console.log(userdetails);
 })
 
+app.get("/getconnections",checkUser,async(req,res)=>{
+  let user=req.user;
+  let connections=await User.find({_id:user.id})
+  if(connections){
+    res.status(200).json({connections:connections.conncetedPeoples});
+  }
+})
+
 app.get("/", checkUser, (req, res) => {
   res.status(200).json({ message: "User is authenticated" });
 });
