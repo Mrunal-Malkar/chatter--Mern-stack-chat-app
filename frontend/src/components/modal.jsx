@@ -1,16 +1,80 @@
 import Modal from "react-modal";
 import { ModalCont } from "../pages/home";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 Modal.setAppElement("#root"); // Required for accessibility
 
 const ConnectionModal = () => {
   const { isOpen, setIsOpen } = useContext(ModalCont);
   const [send, setSend] = useState(true);
+  const [availableSend, setAvailableSend] = useState([]);
+  const [requestSent, setRequestSent] = useState([]);
 
   const handleClose = () => {
     setIsOpen(false);
   };
+
+  const handleAvailable = async () => {
+    try {
+      const availableContacts = await axios.get(
+        `${import.meta.env.VITE_Base_Url}/getAvailable`,
+        { withCredentials: true }
+      );
+      if (availableContacts) {
+        console.log(
+          "this is available contacts:",
+          availableContacts.data.contacts
+        );
+        setAvailableSend(availableContacts.data.contacts);
+      }
+    } catch (err) {
+      console.log(err);
+      toast(err.data.message);
+    }
+  };
+
+  const handleRequested = async () => {
+    try {
+      const getRequestedContacts = await axios.get(
+        `${import.meta.env.VITE_Base_Url}/getRequested`
+      ,{withCredentials:true});
+      if (getRequestedContacts.status == 200) {
+        console.log("this are the contacts",getRequestedContacts.data.contacts)
+        setRequestSent(getRequestedContacts.data.contacts);
+      }
+    } catch (err) {
+      console.log(err);
+      toast(err.response.data.error);
+    }
+  };
+
+  const handleConnect = async (id) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/action/reqconnect",
+        { receiverId: id },
+        { withCredentials: true }
+      );
+      if (response.status == 200) {
+        toast("sucessfully request send!");
+      }
+    } catch (err) {
+      console.log("error at connecting:", err);
+      toast("error:",err.message||err.response.data.message);
+    }
+  };
+
+  useEffect(() => {
+    if (send) {
+      handleAvailable();
+    } else if (!send) {
+      handleRequested();
+    } else {
+      setSend("No connection available.");
+    }
+  }, [send]);
 
   return (
     <Modal
@@ -18,6 +82,7 @@ const ConnectionModal = () => {
       className="bg-transparent w-full h-full flex justify-center align-middle items-center p-2 self-center text-gray-100"
     >
       <div className="bg-gray-700 w-full md:w-2/4 lg:w-3/4 h-3/4 rounded-xl">
+        <ToastContainer />
         <div className="w-full h-1/12 text-center font-semibold align-middle md:text-xl flex justify-between text-xl lg:text-2xl p-2 border-b-6 border-blue-400">
           <h1 className="w-11/12 text-center">Manage Connection's</h1>
           <button
@@ -55,44 +120,86 @@ const ConnectionModal = () => {
           </div>
 
           {send ? (
-            <div className="flex flex-col">
-              <div className="w-full p-2 md:block hidden lg:text-2xl text-lg">
+            <div className="flex flex-col h-5/6">
+              <div className="w-full p-2 md:block h-1/12 hidden lg:text-2xl text-lg">
                 <h1>Connect with people's</h1>
               </div>
-              <div className="w-full flex flex-col p-2 overflow-auto h-[520px] rounded-b-xl">
+              <div className="w-full flex flex-col p-2 overflow-auto h-11/12 rounded-b-xl">
                 {/* the person to send req div */}
-                <div className="min-h-[80px] mb-2 rounded-md bg-gray-800 w-full gap-x-4 flex p-1 items-center justify-between">
-                  <div className="min-h-[60px] max-h-[60px] min-w-[60px] max-w-[60px] circulardiv bg-gray-00 flex justify-center items-center"></div>
-                  <div className="h-full flex justify-start align-middle items-center">
-                    <h1 className="text-xl text-gray-200">
-                      The person connected
-                    </h1>
-                  </div>
-                  <div className="p-2 bg-green-600 text-black flex justify-center align-middle items-center font-mono text-md md:text-lg rounded-xl px-4">
-                    <button className="text-center">Connect</button>
-                  </div>
-                </div>
+                {availableSend.length > 0 ? (
+                  availableSend.map((contact) => (
+                    <div
+                      key={contact._id}
+                      className="min-h-[80px] mb-2 rounded-md bg-gray-800 w-full gap-x-4 flex p-1 items-center justify-between"
+                    >
+                      <div className="min-h-[60px] max-h-[60px] min-w-[60px] max-w-[60px] bg-black circulardiv flex justify-center items-center">
+                        <img
+                          src={`https://avatar.iran.liara.run/public/${contact.avatarno}`}
+                          className="w-full h-full"
+                          alt="avatar"
+                        />
+                      </div>
+                      <div className="h-full flex justify-start items-center">
+                        <h1 className="text-xl text-gray-200">
+                          {contact.username}
+                        </h1>
+                      </div>
+                      <div className="p-2 bg-green-600 text-black flex justify-center items-center font-mono text-md md:text-lg rounded-xl px-4">
+                        <button
+                          className="text-center"
+                          onClick={() => handleConnect(contact._id)}
+                        >
+                          Connect
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <h1 className="text-gray-400 text-center">No contacts</h1>
+                )}
+
                 {/* the end of send request div */}
               </div>
             </div>
           ) : (
-            <div className="flex flex-col">
-              <div className="w-full p-2 md:block hidden lg:text-2xl text-lg">
+            <div className="flex flex-col h-5/6">
+              <div className="w-full p-2 md:block hidden lg:text-2xl text-lg h-1/12">
                 <h1>Request received</h1>
               </div>
-              <div className="w-full flex flex-col p-2 overflow-auto h-[520px] rounded-b-xl">
+              <div className="w-full flex flex-col p-2 overflow-auto h-11/12 rounded-b-xl">
                 {/* the person to send req div */}
-                <div className="min-h-[80px] mb-2 rounded-md bg-gray-800 w-full gap-x-4 flex p-1 items-center justify-between">
-                  <div className="min-h-[60px] max-h-[60px] min-w-[60px] max-w-[60px] circulardiv bg-gray-00 flex justify-center items-center"></div>
-                  <div className="h-full flex justify-start align-middle items-center">
-                    <h1 className="text-xl text-gray-200">
-                      The person connected
-                    </h1>
-                  </div>
-                  <div className="p-2 bg-green-600 text-black flex justify-center align-middle items-center font-mono text-md md:text-lg rounded-xl px-4">
-                    <button className="text-center">Connect</button>
-                  </div>
-                </div>
+                {requestSent.length > 0 ? (
+                  requestSent.map((contact) => (
+                    <div
+                      key={contact._id}
+                      className="min-h-[80px] mb-2 rounded-md bg-gray-800 w-full gap-x-4 flex p-1 items-center justify-between"
+                    >
+                      <div className="min-h-[60px] max-h-[60px] min-w-[60px] max-w-[60px] bg-black circulardiv flex justify-center items-center">
+                        <img
+                          src={`https://avatar.iran.liara.run/public/${contact.avatarno}`}
+                          className="w-full h-full"
+                          alt="avatar"
+                        />
+                      </div>
+                      <div className="h-full flex justify-start items-center">
+                        <h1 className="text-xl text-gray-200">
+                          {contact.username}
+                        </h1>
+                      </div>
+                      <div className="p-2 bg-green-600 text-black flex justify-center items-center font-mono text-md md:text-lg rounded-xl px-4">
+                        <button
+                          className="text-center"
+                          onClick={() => handleAccept(contact._id)}
+                        >
+                          Accept
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <h1 className="text-gray-400 text-center">No contacts</h1>
+                )}
+
                 {/* the end of send request div */}
               </div>
             </div>

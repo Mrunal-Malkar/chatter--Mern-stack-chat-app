@@ -12,15 +12,16 @@ export const signUpController = async (req, res) => {
         .json({ error: "error in authontication please fill the form!" });
     }
 
+    const checkUser = await User.findOne({ email: email });
+    if (checkUser) {
+      console.log("user already exits")
+      return res.status(404).json({ error: "user already exist with that gmail" });
+    }
+    
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
     const securedPassword = await bcrypt.hash(password, salt);
-
-    const checkUser = await User.findOne({ email: email });
-    if (checkUser) {
-      return res.status(404).json({ error: "user already exist with that gmail" });
-    }
-
+  
     const newUser = await User.create({
       username: username,
       email: email,
@@ -31,13 +32,13 @@ export const signUpController = async (req, res) => {
     const Token = await jwt.sign({ id: newUser._id }, process.env.SECRETKEY, {
       expiresIn: "48h",
     });
-    req.user = newUser;
+    
     res.cookie("token", Token, {
       httpOnly: true,
       sameSite: "Strict",
       maxAge: 1000 * 60 * 60 * 48,
     });
-
+  
     return res.status(200).json({ message: "succesfully signed up!" });
   } catch (err) {
     console.log("Authentication error:", err);

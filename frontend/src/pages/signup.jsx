@@ -31,14 +31,14 @@ const Signup = () => {
         password,
         email,
         avatarno: avatarNo,
-      });
+      },{withCredentials:true});
 
       if (submit.status == 200) {
         toast("Succesfully signedUp in!");
         window.location.href="/"
       }
     } catch (err) {
-      toast("error occured:", submit.error);
+      toast("error occured:", err.error || err.message || err.data.error || err.error);
     }
   };
 

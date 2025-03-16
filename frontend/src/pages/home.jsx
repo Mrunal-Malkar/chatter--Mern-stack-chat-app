@@ -1,28 +1,26 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/navbar";
-import {io} from "socket.io-client";
+import io from "socket.io-client";
 import "./../stylesheets/home.css";
 import { ToastContainer, toast } from "react-toastify";
 import ConnectionModal from "../components/modal";
 
 const ModalCont = createContext();
-const socket=io("http://localhost:3000");
+const socket = io("http://localhost:3000");
 
 const Home = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState("loading...");
   const [avatarno, setAvatarNo] = useState(null);
-  const [message,setMessage] =useState("");
+  const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
   const [users, setUsers] = useState("loading...");
   const [isOpen, setIsOpen] = useState(false);
 
+  useEffect(()=>{
+      socket.on("msg",(msg)=>console.log("message received:",msg));
+  },[])
 
-useEffect(()=>{
-  socket.on("msg",(msg)=>console.log("message received:",msg));
-},[])
-  
   const GetUser = async () => {
     try {
       console.log("thiss is the username:", import.meta.env.VITE_Base_Url);
@@ -33,8 +31,6 @@ useEffect(()=>{
       setUsername(user.data.user.username);
       setEmail(user.data.user.email);
       setAvatarNo(user.data.user.avatarno);
-      
-      setIsAuthenticated(true);
     } catch (err) {
       toast.error("please login or signup!");
       setTimeout(() => {
@@ -42,7 +38,7 @@ useEffect(()=>{
       }, 1500);
     }
   };
-  
+
   const GetUsers = async () => {
     try {
       const allusers = await axios.get(`${import.meta.env.BASE_URL}/getusers`, {
@@ -50,12 +46,10 @@ useEffect(()=>{
       });
     } catch (err) {}
   };
-  
-  const handleSend=async()=>{
-    if(message!==""){
-      socket.emit("sendmessage",message);      
-    }
-  }
+
+  const handleSend = () => {
+    console.log("this is handleSend");
+  };
 
   useEffect(() => {
     GetUser();
@@ -64,7 +58,7 @@ useEffect(()=>{
 
   return (
     <>
-      <ModalCont.Provider value={{isOpen,setIsOpen}}>
+      <ModalCont.Provider value={{ isOpen, setIsOpen }}>
         <Navbar username={username} email={email} avatarno={avatarno} />
         <ConnectionModal />
         <div className="w-full h-[92vh] flex bg-[#288C9B] justify-center items-center">
@@ -87,7 +81,13 @@ useEffect(()=>{
 
               {/* connect person div */}
               <div className="min-h-[80px] bg-gray-700 m-2 flex justify-start items-center p-1">
-                <div className="min-w-[70px] bg-blue-500 min-h-[70px] max-w-[70px] max-h-[70px] circulardiv"></div>{" "}
+                <div className="min-w-[70px] bg-blue-500 min-h-[70px] max-w-[70px] max-h-[70px] circulardiv">
+                  <img
+                    src={`https://avatar.iran.liara.run/public/${1}`}
+                    className="w-full h-full"
+                    alt=""
+                  />
+                </div>
                 {/* profile pic div */}
                 <div className="flex flex-col p-2 gap-y-1 w-full h-full text-gray-200">
                   {" "}
@@ -138,10 +138,13 @@ useEffect(()=>{
                 <input
                   type="text"
                   placeholder="Type a message"
-                  onChange={(e)=>setMessage(e.target.value)}
+                  onChange={(e) => setMessage(e.target.value)}
                   className="min-w-[90%] ps-3 max-w-[90%] h-full rounded-xl outline-none border-2 border-gray-400"
                 />
-                <div onClick={handleSend} className="min-w-[5%] max-w-[5%] flex justify-center items-center">
+                <div
+                  onClick={handleSend}
+                  className="min-w-[5%] max-w-[5%] flex justify-center items-center"
+                >
                   <i class="fa-solid fa-arrow-up text-3xl"></i>
                 </div>
               </div>
@@ -155,5 +158,5 @@ useEffect(()=>{
   );
 };
 
-export {ModalCont};
+export { ModalCont };
 export default Home;
