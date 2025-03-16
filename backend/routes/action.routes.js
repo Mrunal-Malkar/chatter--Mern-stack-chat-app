@@ -42,4 +42,48 @@ route.post("/reqconnect", checkUser, async (req, res) => {
   }
 });
 
+route.post("/reqaccept", checkUser, async (req, res) => {
+  try {
+    let acceptor = req.user.id;
+    let sender = req.body.id;
+
+    let senderUser = await User.findById(sender).select("-password");
+    let acceptorUser = await User.findById(acceptor).select("-password");
+
+    if (!senderUser || !acceptorUser) {
+      return res.status(404).json({ message: "No user found!" });
+    }
+
+    if (
+      senderUser.connections.includes(acceptor) ||
+      acceptorUser.connections.includes(sender)
+    ) {
+      return res.status(200).json({ message: "Request already accepted!" });
+    }
+
+    if (
+      !senderUser.sentRequests.includes(acceptor) ||
+      !acceptorUser.receivedRequests.includes(sender)
+    ) {
+      return res.status(400).json({ message: "No pending request found!" });
+    }
+
+    await Promise.all([
+      User.findByIdAndUpdate(sender, {
+        $pull: { sentRequests: acceptor },
+        $push: { connections: acceptor },
+      }),
+      User.findByIdAndUpdate(acceptor, {
+        $pull: { receivedRequests: sender },
+        $push: { connections: sender },
+      }),
+    ]);
+
+    res.status(200).json({ message: "Request accepted!" });
+  } catch (err) {
+    console.error("Error in accepting request:", err);
+    res.status(500).json({ message: "Error in accepting request!" });
+  }
+});
+
 export default route;

@@ -74,7 +74,7 @@ app.get("/getuser", checkUser, async (req, res) => {
   try {
     let user = req.user;
     if (user) {
-      const details = await User.findOne({ _id: user.id }).select("-password");
+      const details = await User.findOne({ _id: user.id }).populate("connections").select("-password");
       res.status(200).json({ user: details });
     } else {
       res.status(399).json({ message: "No user found" });

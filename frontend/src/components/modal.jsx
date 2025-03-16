@@ -53,7 +53,7 @@ const ConnectionModal = () => {
   const handleConnect = async (id) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/action/reqconnect",
+        `${import.meta.env.VITE_Base_Url}/action/reqconnect`,
         { receiverId: id },
         { withCredentials: true }
       );
@@ -62,9 +62,19 @@ const ConnectionModal = () => {
       }
     } catch (err) {
       console.log("error at connecting:", err);
-      toast("error:",err.message||err.response.data.message);
+      toast("error:",err.message||err.response.data.message||err.data || err);
     }
   };
+
+  const handleAccept=async(id)=>{
+    try{
+      let response=await axios.post(`${import.meta.env.VITE_Base_Url}/action/reqaccept`,{id:id},{withCredentials:true});
+      console.log(response);
+    }catch(err){
+      console.log("error for accepting request:",err)
+      toast(err.data.message||err.data.error||"error in accepting request");
+    }
+  }
 
   useEffect(() => {
     if (send) {
