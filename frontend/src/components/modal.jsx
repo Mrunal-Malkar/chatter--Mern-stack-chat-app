@@ -23,10 +23,6 @@ const ConnectionModal = () => {
         { withCredentials: true }
       );
       if (availableContacts) {
-        console.log(
-          "this is available contacts:",
-          availableContacts.data.contacts
-        );
         setAvailableSend(availableContacts.data.contacts);
       }
     } catch (err) {
@@ -41,7 +37,6 @@ const ConnectionModal = () => {
         `${import.meta.env.VITE_Base_Url}/getRequested`
       ,{withCredentials:true});
       if (getRequestedContacts.status == 200) {
-        console.log("this are the contacts",getRequestedContacts.data.contacts)
         setRequestSent(getRequestedContacts.data.contacts);
       }
     } catch (err) {
@@ -69,7 +64,6 @@ const ConnectionModal = () => {
   const handleAccept=async(id)=>{
     try{
       let response=await axios.post(`${import.meta.env.VITE_Base_Url}/action/reqaccept`,{id:id},{withCredentials:true});
-      console.log(response);
     }catch(err){
       console.log("error for accepting request:",err)
       toast(err.data.message||err.data.error||"error in accepting request");
