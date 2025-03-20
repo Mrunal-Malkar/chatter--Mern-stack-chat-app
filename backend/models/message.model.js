@@ -5,9 +5,9 @@ const messageSchema=new mongoose.Schema({
     sender:{type:mongoose.Schema.Types.ObjectId,ref:"User"},
     group:{type:mongoose.Schema.Types.ObjectId,ref:"Group"},
     content:{type:String,required:true},
-    date:Date.now(),
+    date:{type:Number,default:Date.now()},
 },{timestamps:true})
 
-const message=mongoose.model("Message",messageSchema);
+const Message=mongoose.model("Message",messageSchema);
 
-export default message;
+export default Message;
