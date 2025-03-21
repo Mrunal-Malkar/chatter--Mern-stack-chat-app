@@ -29,11 +29,16 @@ const io = new Server(server, { cors: { origin: "*" } });
 io.on("connection", (socket) => {
   socket.on("msgsent", async (details) => {
     try {
+      
+      
       let sender = await User.findOne({ email: details.sender });
       let receiver = await User.findOne({ email: details.receiver });
 
+      socket.to([socket.id,receiver._id]).emit("success",{sender:details.sender,content:details.message});
+      
       if (!sender || !receiver) {
         socket.emit("failed", "No user found");
+      socket.emit("error",{sender:details.sender,content:details.message});
         return;
       }
 
@@ -43,22 +48,32 @@ io.on("connection", (socket) => {
         content: details.message,
       });
 
+      if(!newMessage){
+        socket.emit("failed", "An error occurred while sending the message");
+        socket.emit("error",{sender:details.sender,content:details.message});
+        return;
+      }
+
       await newMessage.save();
 
-      await User.findOneAndUpdate(
+      let updatedSender=await User.findOneAndUpdate(
         { email: details.sender },
         { $push: { messages: newMessage._id } }
       );
-
-      await User.findOneAndUpdate(
+      let updatedReceiver=await User.findOneAndUpdate(
         { email: details.receiver },
         { $push: { messages: newMessage._id } }
       );
 
-      io.emit("msg", newMessage); // Broadcast the message to all clients
-      socket.emit("success", "Successfully sent the message");
+      if(!updatedSender || !updatedReceiver){
+        socket.emit("failed","cannot perform the operation!")
+        socket.emit("error",{sender:details.sender,content:details.message});
+        return;
+      }
+
     } catch (error) {
       console.error("Error sending message:", error);
+      socket.emit("error",{sender:details.sender,content:details.message});
       socket.emit("failed", "An error occurred while sending the message");
     }
   });
@@ -76,9 +91,9 @@ app.get("/getAvailable", checkUser, async (req, res) => {
     let availableContacts = await User.find({
       _id: {
         $nin: [
-          ...user.connections,
-          ...user.receivedRequests,
-          ...user.sentRequests,
+          ...user.connections || [],
+          ...user.receivedRequests || [],
+          ...user.sentRequests || [],
           requestedUser,
         ],
       },
@@ -116,7 +131,7 @@ app.post("/getMessages", checkUser, async (req, res) => {
         { sender: sender, receiver: receiver },
         { sender: receiver, receiver: sender },
       ],
-    }).sort({ createdAt: 1 });
+    }).sort({ createdAt: 1 }).populate("sender");
 
     if (messages.length == 0) {
       return res.status(404).json({ message: "no message found!" });

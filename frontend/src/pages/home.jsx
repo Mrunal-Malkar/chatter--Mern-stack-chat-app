@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/navbar";
 import io from "socket.io-client";
@@ -13,21 +13,23 @@ const Home = () => {
   const [username, setUsername] = useState("loading...");
   const [avatarno, setAvatarNo] = useState(null);
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
   const [connections, setConnections] = useState([]);
   const [email, setEmail] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [receiver, setReceiver] = useState(null);
 
   useEffect(() => {
-    socket.on("msg", (msg) => console.log("message received:", msg));
     socket.on("error", (err) => {
       toast.error(err);
     });
     socket.on("success", (success) => {
-      toast.success(success);
+      setMessages((msg)=>msg.push(success));
+      console.log("message succed", success);
     });
     socket.on("failed", (f) => {
-      toast.error(f);
+      setMessages((messages) => messages.filter((msg) => msg != f));
+      console.log("this are the messages", messages);
     });
   }, []);
 
@@ -40,7 +42,7 @@ const Home = () => {
       setEmail(user.data.user.email);
       setAvatarNo(user.data.user.avatarno);
       setConnections(user.data.user.connections);
-    } catch (err) {
+    } catch {
       toast.error("please login or signup!:");
       setTimeout(() => {
         window.location.href = "/login";
@@ -50,7 +52,6 @@ const Home = () => {
 
   const refresh = () => {
     GetUser();
-    toast("refreshed sucessfully");
   };
 
   const handleSend = () => {
@@ -76,15 +77,31 @@ const Home = () => {
     };
   }, []);
 
+  const yo = () => {
+    console.log(messages);
+  };
+
   useEffect(() => {
-    if (receiver) {
-    let fetch=async()=>{
-    let response=await axios.post(`${import.meta.env.VITE_Base_Url}/getMessages`,{receiver:receiver},{withCredentials:true});
-    console.log("this is the response",response); 
-  }
-  fetch();
-    }else{
-      console.log("no receiver");
+    try {
+      if (receiver) {
+        let fetch = async () => {
+          let response = await axios.post(
+            `${import.meta.env.VITE_Base_Url}/getMessages`,
+            { receiver: receiver },
+            { withCredentials: true }
+          );
+          console.log("this is the receiver:", receiver);
+          console.log("this is the messages:", response.data.messages);
+          setMessages(response.data.messages);
+        };
+        fetch();
+      } else {
+        setMessages([]);
+        console.log("no receiver");
+      }
+    } catch {
+      console.log("error in fetching messages");
+      setMessages([]);
     }
   }, [receiver]);
 
@@ -103,7 +120,7 @@ const Home = () => {
               {/* the start of search bar */}
               <div className="w-full flex overflow-auto p-1 min-h-[50px] max-h-[50x]">
                 <div className="h-full rounded-l-md bg-gray-700 flex justify-center p-2 items-center">
-                  <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                  <i className="fa-solid fa-magnifying-glass text-lg"></i>
                 </div>
                 <input
                   type="text"
@@ -111,7 +128,10 @@ const Home = () => {
                   className="w-full text-gray-300 ps-2 text-lg md:text-xl bg-gray-700 outline-none border-0 h-full"
                 />
                 <div className="h-full rounded-r-md bg-gray-700 flex justify-center p-2 items-center">
-                  <i onClick={refresh} class="fa-solid fa-arrows-rotate"></i>
+                  <i
+                    onClick={refresh}
+                    className="fa-solid fa-arrows-rotate"
+                  ></i>
                 </div>
               </div>
               {/* end of search bar */}
@@ -167,7 +187,7 @@ const Home = () => {
                 {/* the div at top for info of person user is chatting with*/}
                 <div className="min-h-[9%] bg-gray-700 gap-x-4 flex p-1 items-center justify-start">
                   <div onClick={() => setReceiver(null)} className="p-1">
-                    <i class="fa-solid fa-arrow-left m-0.5"></i>Back
+                    <i className="fa-solid fa-arrow-left m-0.5"></i>Back
                   </div>
                   <div className="min-h-[60px] max-h-[60px] min-w-[60px] max-w-[60px] circulardiv bg-gray-800 flex justify-center items-center">
                     <img
@@ -185,13 +205,37 @@ const Home = () => {
                 {/* end of top div for info */}
 
                 {/* the middle div for messages */}
-                <div className="min-h-[83%] max-h-[85%]"></div>
+                <div className="min-h-[83%] max-h-[85%]">
+                  {messages.length > 0 ? (
+                    <div className="flex flex-col gap-y-7 h-full overflow-auto w-full">
+                      {messages.map((msg) => {
+                        return (
+                          <div
+                            onClick={yo}
+                            key={msg._id || msg.content}
+                            className={
+                              msg.sender.username == username
+                                ? "max-w-1/3 bg-blue-400 h-min"
+                                : "max-w-1/3 bg-green-400 h-min"
+                            }
+                          >
+                            {msg.content}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="flex justify-between align-middle items-center">
+                      <h1>Start the Convo💬</h1>
+                    </div>
+                  )}
+                </div>
                 {/* end of middle div for messages */}
 
                 {/* the div at the bottom for input */}
                 <div className="min-h-[8%] bg-gray-700 flex justify-start items-center p-2 text-xl">
                   <div className="min-w-[5%] max-w-[5%] flex justify-center items-center">
-                    <i class="fa-solid fa-plus text-2xl"></i>
+                    <i className="fa-solid fa-plus text-2xl"></i>
                   </div>
                   <input
                     type="text"
@@ -203,7 +247,7 @@ const Home = () => {
                     onClick={handleSend}
                     className="min-w-[5%] max-w-[5%] flex justify-center items-center"
                   >
-                    <i class="fa-solid fa-arrow-up text-2xl"></i>
+                    <i className="fa-solid fa-arrow-up text-2xl"></i>
                   </div>
                 </div>
                 {/* end of bottom div for input */}

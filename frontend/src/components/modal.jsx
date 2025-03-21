@@ -1,6 +1,6 @@
 import Modal from "react-modal";
 import { ModalCont } from "../pages/home";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -27,7 +27,7 @@ const ConnectionModal = () => {
       }
     } catch (err) {
       console.log(err);
-      toast(err.data.message);
+      toast(err.data.message || err.data || err);
     }
   };
 
@@ -54,6 +54,7 @@ const ConnectionModal = () => {
       );
       if (response.status == 200) {
         toast("sucessfully request send!");
+        handleAvailable();
       }
     } catch (err) {
       console.log("error at connecting:", err);
@@ -64,6 +65,10 @@ const ConnectionModal = () => {
   const handleAccept=async(id)=>{
     try{
       let response=await axios.post(`${import.meta.env.VITE_Base_Url}/action/reqaccept`,{id:id},{withCredentials:true});
+      if(response.status==200){
+        toast("sucessfully accepted request!");
+        handleRequested();
+      }
     }catch(err){
       console.log("error for accepting request:",err)
       toast(err.data.message||err.data.error||"error in accepting request");
@@ -93,7 +98,7 @@ const ConnectionModal = () => {
             className="px-2 rounded-md bg-red-500 text-xl text-white"
             onClick={handleClose}
           >
-            <i class="fa-solid fa-xmark"></i>
+            <i className="fa-solid fa-xmark"></i>
           </button>
         </div>
 
