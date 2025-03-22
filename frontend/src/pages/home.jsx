@@ -24,12 +24,12 @@ const Home = () => {
       toast.error(err);
     });
     socket.on("success", (success) => {
-      setMessages((msg)=>msg.push(success));
+      setMessages((msg)=>[...msg, success]);
       console.log("message succed", success);
     });
     socket.on("failed", (f) => {
-      setMessages((messages) => messages.filter((msg) => msg != f));
-      console.log("this are the messages", messages);
+      setMessages((messages)=>messages.filter((msg) => msg.content !== f.content));
+      console.log("this are the messages");
     });
   }, []);
 
@@ -73,6 +73,8 @@ const Home = () => {
     return () => {
       socket.off("success");
       socket.off("error");
+      socket.off("disconnect");
+      socket.off("register");
       socket.off("failed");
     };
   }, []);
@@ -84,6 +86,7 @@ const Home = () => {
   useEffect(() => {
     try {
       if (receiver) {
+        socket.emit("register",email);
         let fetch = async () => {
           let response = await axios.post(
             `${import.meta.env.VITE_Base_Url}/getMessages`,
@@ -97,13 +100,16 @@ const Home = () => {
         fetch();
       } else {
         setMessages([]);
+        socket.emit("disconnected",email);
         console.log("no receiver");
       }
     } catch {
-      console.log("error in fetching messages");
       setMessages([]);
+      socket.emit("disconnected",email);
+      console.log("no receiver");
+      console.log("error in fetching messages");
     }
-  }, [receiver]);
+  }, [receiver,email]);
 
   return (
     <>
@@ -147,7 +153,7 @@ const Home = () => {
                     >
                       <div className="min-w-[70px] bg-blue-500 min-h-[70px] max-w-[70px] max-h-[70px] circulardiv">
                         <img
-                          src={`https://avatar.iran.liara.run/public/${val.avatarno}`}
+                          src={`https://robohash.org/${val.avatarno}`}
                           className="w-full h-full"
                           alt=""
                         />
@@ -191,7 +197,7 @@ const Home = () => {
                   </div>
                   <div className="min-h-[60px] max-h-[60px] min-w-[60px] max-w-[60px] circulardiv bg-gray-800 flex justify-center items-center">
                     <img
-                      src={`https://avatar.iran.liara.run/public/${receiver.avatarno}`}
+                      src={`https://robohash.org/${receiver.avatarno}`}
                       className="w-full h-full"
                       alt=""
                     />
@@ -284,7 +290,7 @@ const Home = () => {
                       >
                         <div className="min-w-[70px] bg-blue-500 min-h-[70px] max-w-[70px] max-h-[70px] circulardiv">
                           <img
-                            src={`https://avatar.iran.liara.run/public/${val.avatarno}`}
+                            src={`https://robohash.org/${val.avatarno}`}
                             className="w-full h-full"
                             alt=""
                           />
@@ -329,7 +335,7 @@ const Home = () => {
                 <div className="min-h-[9%] bg-gray-700 gap-x-4 flex p-1 items-center justify-start">
                   <div className="min-h-[60px] max-h-[60px] min-w-[60px] max-w-[60px] circulardiv bg-gray-800 flex justify-center items-center">
                     <img
-                      src={`https://avatar.iran.liara.run/public/${receiver.avatarno}`}
+                      src={`https://robohash.org/${receiver.avatarno}`}
                       className="w-full h-full"
                       alt=""
                     />

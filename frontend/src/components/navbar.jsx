@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect } from "react";
+// import React, { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 const Navbar = (props) => {
@@ -26,7 +26,7 @@ const Navbar = (props) => {
           <div className="min-w-10 h-full rounded-[50%] bg-black">
             <img
               className="w-full h-full"
-              src={`https://avatar.iran.liara.run/public/${props.avatarno}`}
+              src={`https://robohash.org/${props.avatarno}`}
               alt=""
             />
           </div>

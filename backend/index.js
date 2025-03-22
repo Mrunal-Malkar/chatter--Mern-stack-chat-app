@@ -26,7 +26,17 @@ connectDb();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
+const registeredUsers={};
+
 io.on("connection", (socket) => {
+
+  socket.on("register",(useremail)=>{
+    if(!registeredUsers[useremail]){
+      registeredUsers[useremail]=socket.id;
+      console.log("regitered with key",useremail);
+    }
+  })
+
   socket.on("msgsent", async (details) => {
     try {
       
@@ -34,8 +44,8 @@ io.on("connection", (socket) => {
       let sender = await User.findOne({ email: details.sender });
       let receiver = await User.findOne({ email: details.receiver });
 
-      socket.to([socket.id,receiver._id]).emit("success",{sender:details.sender,content:details.message});
-      
+      io.to(registeredUsers[sender.email]).to(registeredUsers[receiver.email]).emit("success", { sender: details.sender, content: details.message });
+
       if (!sender || !receiver) {
         socket.emit("failed", "No user found");
       socket.emit("error",{sender:details.sender,content:details.message});
@@ -77,6 +87,12 @@ io.on("connection", (socket) => {
       socket.emit("failed", "An error occurred while sending the message");
     }
   });
+
+  socket.on("disconnected",(useremail)=>{
+    console.log("user disconnected",registeredUsers[useremail]);
+    delete registeredUsers[useremail];
+  })
+
 });
 
 const PORT = 3000;

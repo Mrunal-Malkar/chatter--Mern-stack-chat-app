@@ -64,7 +64,7 @@ const Signup = () => {
             </h3>
             <div className="flex flex-col self-center w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-[50%] border-3 border-black bg-gray-800 overflow-hidden">
               <img
-                src={`https://avatar.iran.liara.run/public/${avatarNo}`}
+                src={`https://robohash.org/${avatarNo}`}
                 className="w-full h-full"
                 alt=""
               />

@@ -143,7 +143,7 @@ const ConnectionModal = () => {
                     >
                       <div className="min-h-[60px] max-h-[60px] min-w-[60px] max-w-[60px] bg-black circulardiv flex justify-center items-center">
                         <img
-                          src={`https://avatar.iran.liara.run/public/${contact.avatarno}`}
+                          src={`https://robohash.org/${contact.avatarno}`}
                           className="w-full h-full"
                           alt="avatar"
                         />
@@ -185,7 +185,7 @@ const ConnectionModal = () => {
                     >
                       <div className="min-h-[60px] max-h-[60px] min-w-[60px] max-w-[60px] bg-black circulardiv flex justify-center items-center">
                         <img
-                          src={`https://avatar.iran.liara.run/public/${contact.avatarno}`}
+                          src={`https://robohash.org/${contact.avatarno}`}
                           className="w-full h-full"
                           alt="avatar"
                         />
