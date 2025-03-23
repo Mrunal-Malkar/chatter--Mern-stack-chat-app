@@ -43,7 +43,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="w-full min-h-[100vh] flex justify-center algin-middle items-center md:flex-row flex-col">
+    <div className="w-full min-h-[100vh] flex justify-center algin-middle items-center bg-gray-900 md:flex-row flex-col">
       <ToastContainer />
       <div className="w-[300px] md:w-[400px] flex flex-col justify-center items-center">
         <h1 className="text-4xl font-bold text-blue-400 m-2">
@@ -56,7 +56,7 @@ const Signup = () => {
         <form
           onSubmit={handleSubmit}
           method="POST"
-          className="flex flex-col gap-y-4 p-4 bg-[#2D232E] w-full text-xl rounded-xl border-2 drop-shadow-2xl border-gray-700"
+          className="flex flex-col gap-y-4 p-4 text-white bg-[#2D232E] w-full text-xl rounded-xl border-2 drop-shadow-2xl border-gray-700"
         >
           <div className="flex justify-end items-end flex-col">
             <h3 className="text-2xl font-semibold self-center mb-2 text-gray-50">

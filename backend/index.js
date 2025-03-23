@@ -5,7 +5,6 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { checkUser } from "./middleware/checkuser.js";
-import mongoose from "mongoose";
 import http from "http";
 import User from "./models/user.model.js";
 import { Server, Socket } from "socket.io";
@@ -13,7 +12,7 @@ import actionRouter from "./routes/action.routes.js";
 import Message from "./models/message.model.js";
 
 const app = express();
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: "https://chatter-mern-stack-chat-app.vercel.app", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));

@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/navbar";
 import io from "socket.io-client";
@@ -18,6 +18,14 @@ const Home = () => {
   const [email, setEmail] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [receiver, setReceiver] = useState(null);
+
+  const scrolldiv = useRef();
+
+  useEffect(() => {
+    scrolldiv.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages]);
 
   useEffect(() => {
     socket.on("error", (err) => {
@@ -215,7 +223,7 @@ const Home = () => {
                 {/* the middle div for messages */}
                 <div className="min-h-[83%] max-h-[85%]">
                   {messages.length > 0 ? (
-                    <div className="flex flex-col gap-y-7 h-full overflow-auto w-full">
+                    <div className="flex flex-col gap-y-7 h-full overflow-auto w-full overscroll-contain">
                       {messages.map((msg) => {
                         return (
                           <div
@@ -235,6 +243,7 @@ const Home = () => {
                           </div>
                         );
                       })}
+                      <div ref={scrolldiv} />
                     </div>
                   ) : (
                     <div className="flex justify-between align-middle items-center">
@@ -374,21 +383,22 @@ const Home = () => {
                             }
                           >
                             <div
-                            className={
-                              msg.sender.email
-                                ? msg.sender.email == email
-                                  ? "max-w-[45%] bg-gray-900 h-min p-2 rounded-l-2xl rounded-tr-2xl "
-                                  : "max-w-[45%] rounded-r-2xl rounded-tl-2xl bg-gray-700 h-min p-2"
-                                : msg.sender == email
-                                ? "rounded-l-2xl max-w-[45%] bg-gray-900 h-min p-2"
-                                : "max-w-[45%] bg-gray-700 rounded-r-2xl rounded-tl-2xl h-min p-2"
-                            }
+                              className={
+                                msg.sender.email
+                                  ? msg.sender.email == email
+                                    ? "max-w-[45%] bg-gray-900 h-min p-2 rounded-l-2xl rounded-tr-2xl "
+                                    : "max-w-[45%] rounded-r-2xl rounded-tl-2xl bg-gray-700 h-min p-2"
+                                  : msg.sender == email
+                                  ? "rounded-l-2xl max-w-[45%] bg-gray-900 h-min p-2"
+                                  : "max-w-[45%] bg-gray-700 rounded-r-2xl rounded-tl-2xl h-min p-2"
+                              }
                             >
-                            {msg.content}
+                              {msg.content}
                             </div>
                           </div>
                         );
                       })}
+                      <div ref={scrolldiv} />
                     </div>
                   ) : (
                     <div className="flex justify-between align-middle items-center">

@@ -34,7 +34,7 @@ const Login = () => {
   };
 
   return (
-    <div className="w-full min-h-[100vh] flex justify-center algin-middle">
+    <div className="w-full min-h-[100vh] flex justify-center algin-middle bg-gray-900">
       <div className="w-[300px] md:w-[400px] flex flex-col justify-center items-center">
         {errorAuth && (
           <h1 className="text-red-700 text-[20px]">Error:{errorAuth}</h1>
@@ -44,7 +44,7 @@ const Login = () => {
         <form
           onSubmit={handleSubmit}
           method="POST"
-          className="flex flex-col gap-y-4 p-4 bg-[#2D232E] w-full text-xl rounded-xl border-2 border-gray-900"
+          className="flex flex-col gap-y-4 p-4 bg-[#2D232E] text-white w-full text-xl rounded-xl border-2 border-gray-900"
         >
           <div className="flex flex-col m-1 w-full">
             <label htmlFor="email" className="text-gray-300">
