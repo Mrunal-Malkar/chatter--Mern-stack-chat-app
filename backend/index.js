@@ -12,7 +12,7 @@ import actionRouter from "./routes/action.routes.js";
 import Message from "./models/message.model.js";
 
 const app = express();
-app.use(cors({ origin: "https://chatter-mern-stack-chat-app.vercel.app", credentials: true }));
+app.use(cors({ origin: "https://chatter-mern-stack-chat-app.vercel.app", credentials: true,methods: "GET,HEAD,PUT,PATCH,POST,DELETE"}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
