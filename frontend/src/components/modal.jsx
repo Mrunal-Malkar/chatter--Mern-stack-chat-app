@@ -93,7 +93,7 @@ const ConnectionModal = () => {
       <div className="bg-gray-700 w-full md:w-2/4 lg:w-3/4 h-3/4 rounded-xl">
         <ToastContainer />
         <div className="w-full h-1/12 text-center font-semibold align-middle md:text-xl flex justify-between text-xl lg:text-2xl p-2 border-b-6 border-blue-400">
-          <h1 className="w-11/12 text-center">Manage Connection's</h1>
+          <h1 className="w-11/12 text-center">Manage Connection&apos;s</h1>
           <button
             className="px-2 rounded-md bg-red-500 text-xl text-white"
             onClick={handleClose}

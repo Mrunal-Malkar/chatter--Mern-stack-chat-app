@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { NavLink, useSearchParams } from "react-router";
-import { Cloudinary } from "@cloudinary/url-gen";
+// import { Cloudinary } from "@cloudinary/url-gen";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

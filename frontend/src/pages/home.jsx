@@ -349,7 +349,31 @@ const Home = () => {
                 {/* end of top div for info */}
 
                 {/* the middle div for messages */}
-                <div className="min-h-[83%] max-h-[85%]"></div>
+                <div className="min-h-[83%] max-h-[85%]">
+                {messages.length > 0 ? (
+                    <div className="flex flex-col gap-y-7 h-full overflow-auto w-full">
+                      {messages.map((msg) => {
+                        return (
+                          <div
+                            onClick={yo}
+                            key={msg._id || msg.content}
+                            className={
+                              msg.sender.username == username
+                                ? "max-w-1/3 bg-blue-400 h-min"
+                                : "max-w-1/3 bg-green-400 h-min"
+                            }
+                          >
+                            {msg.content}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="flex justify-between align-middle items-center">
+                      <h1>Start the Convo💬</h1>
+                    </div>
+                  )}
+                </div>
                 {/* end of middle div for messages */}
 
                 {/* the div at the bottom for input */}
