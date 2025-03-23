@@ -26,73 +26,134 @@ connectDb();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
-const registeredUsers={};
+const registeredUsers = {};
 
 io.on("connection", (socket) => {
-
-  socket.on("register",(useremail)=>{
-    if(!registeredUsers[useremail]){
-      registeredUsers[useremail]=socket.id;
-      console.log("regitered with key",useremail);
+  socket.on("register", (useremail) => {
+    if (!registeredUsers[useremail]) {
+      registeredUsers[useremail] = socket.id;
+      console.log("regitered with key", useremail);
     }
-  })
+  });
 
   socket.on("msgsent", async (details) => {
     try {
-      
-      
       let sender = await User.findOne({ email: details.sender });
       let receiver = await User.findOne({ email: details.receiver });
 
-      io.to(registeredUsers[sender.email]).to(registeredUsers[receiver.email]).emit("success", { sender: details.sender, content: details.message });
+      console.log("the receiver:", details.receiver);
+      console.log("the sender:", details.sender);
 
-      if (!sender || !receiver) {
-        socket.emit("failed", "No user found");
-      socket.emit("error",{sender:details.sender,content:details.message});
-        return;
+      if (registeredUsers[sender.email] && registeredUsers[receiver.email]) {
+        io.to(registeredUsers[sender.email])
+          .to(registeredUsers[receiver.email])
+          .emit("success", {
+            sender: details.sender,
+            content: details.message,
+          });
+
+        if (!sender || !receiver) {
+          socket.emit("failed", "No user found");
+          socket.emit("error", {
+            sender: details.sender,
+            content: details.message,
+          });
+          return;
+        }
+
+        let newMessage = await new Message({
+          sender: sender._id,
+          receiver: receiver._id,
+          content: details.message,
+        });
+
+        if (!newMessage) {
+          socket.emit("failed", "An error occurred while sending the message");
+          socket.emit("error", {
+            sender: details.sender,
+            content: details.message,
+          });
+          return;
+        }
+
+        await newMessage.save();
+
+        let updatedSender = await User.findOneAndUpdate(
+          { email: details.sender },
+          { $push: { messages: newMessage._id } }
+        );
+        let updatedReceiver = await User.findOneAndUpdate(
+          { email: details.receiver },
+          { $push: { messages: newMessage._id } }
+        );
+
+        if (!updatedSender || !updatedReceiver) {
+          socket.emit("failed", "cannot perform the operation!");
+          socket.emit("error", {
+            sender: details.sender,
+            content: details.message,
+          });
+          return;
+        }
+      } else {
+        if (!sender || !receiver) {
+          socket.emit("failed", "No user found");
+          socket.emit("error", {
+            sender: details.sender,
+            content: details.message,
+          });
+          return;
+        }
+
+        let newMessage = await new Message({
+          sender: sender._id,
+          receiver: receiver._id,
+          content: details.message,
+        });
+
+        if (!newMessage) {
+          socket.emit("failed", "An error occurred while sending the message");
+          socket.emit("error", {
+            sender: details.sender,
+            content: details.message,
+          });
+          return;
+        }
+
+        await newMessage.save();
+
+        let updatedSender = await User.findOneAndUpdate(
+          { email: details.sender },
+          { $push: { messages: newMessage._id } }
+        );
+        let updatedReceiver = await User.findOneAndUpdate(
+          { email: details.receiver },
+          { $push: { messages: newMessage._id } }
+        );
+
+        if (!updatedSender || !updatedReceiver) {
+          socket.emit("failed", "cannot perform the operation!");
+          socket.emit("error", {
+            sender: details.sender,
+            content: details.message,
+          });
+          return;
+        }
       }
-
-      let newMessage = await new Message({
-        sender: sender._id,
-        receiver: receiver._id,
-        content: details.message,
-      });
-
-      if(!newMessage){
-        socket.emit("failed", "An error occurred while sending the message");
-        socket.emit("error",{sender:details.sender,content:details.message});
-        return;
-      }
-
-      await newMessage.save();
-
-      let updatedSender=await User.findOneAndUpdate(
-        { email: details.sender },
-        { $push: { messages: newMessage._id } }
-      );
-      let updatedReceiver=await User.findOneAndUpdate(
-        { email: details.receiver },
-        { $push: { messages: newMessage._id } }
-      );
-
-      if(!updatedSender || !updatedReceiver){
-        socket.emit("failed","cannot perform the operation!")
-        socket.emit("error",{sender:details.sender,content:details.message});
-        return;
-      }
-
     } catch (error) {
       console.error("Error sending message:", error);
-      socket.emit("error",{sender:details.sender,content:details.message});
+      socket.emit("error", {
+        sender: details.sender,
+        content: details.message,
+      });
       socket.emit("failed", "An error occurred while sending the message");
     }
   });
 
-  socket.on("disconnected",(useremail)=>{
-    console.log("user disconnected",registeredUsers[useremail]);
+  socket.on("disconnected", (useremail) => {
+    console.log("user disconnected", registeredUsers[useremail]);
     delete registeredUsers[useremail];
-  })
-
+  });
 });
 
 const PORT = 3000;
@@ -107,9 +168,9 @@ app.get("/getAvailable", checkUser, async (req, res) => {
     let availableContacts = await User.find({
       _id: {
         $nin: [
-          ...user.connections || [],
-          ...user.receivedRequests || [],
-          ...user.sentRequests || [],
+          ...(user.connections || []),
+          ...(user.receivedRequests || []),
+          ...(user.sentRequests || []),
           requestedUser,
         ],
       },
@@ -147,7 +208,9 @@ app.post("/getMessages", checkUser, async (req, res) => {
         { sender: sender, receiver: receiver },
         { sender: receiver, receiver: sender },
       ],
-    }).sort({ createdAt: 1 }).populate("sender");
+    })
+      .sort({ createdAt: 1 })
+      .populate("sender");
 
     if (messages.length == 0) {
       return res.status(404).json({ message: "no message found!" });
@@ -179,15 +242,6 @@ app.get("/getuser", checkUser, async (req, res) => {
     res.status(400).json({ message: "error to identify the user" });
   }
 });
-
-// app.get("/getusers", checkUser, async (req, res) => {
-//   try {
-//     let user = req.user;
-//     let userdetails = await User.find({ _id: user.id }).select("-password");
-//   } catch {
-//     console.log("users finding error");
-//   }
-// });
 
 app.get("/getconnections", checkUser, async (req, res) => {
   try {
