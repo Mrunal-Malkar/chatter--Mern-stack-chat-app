@@ -1,4 +1,4 @@
-import { lazy, useState } from 'react'
+import { lazy} from 'react'
 import {Routes,Route} from "react-router"
 import './App.css'
 
@@ -7,7 +7,6 @@ const Login=lazy(()=>import("./pages/login.jsx"))
 const Signup=lazy(()=>import("./pages/signup.jsx"))
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>

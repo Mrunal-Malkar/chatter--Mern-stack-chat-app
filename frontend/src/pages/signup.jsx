@@ -18,7 +18,7 @@ const Signup = () => {
     try {
       let no = Math.round(Math.random() * 100);
       setAvatarNo(no);
-    } catch (err) {
+    } catch{
       return "error in uploading image";
     }
   };
@@ -26,7 +26,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const submit = await axios.post("http://localhost:3000/auth/signup", {
+      const submit = await axios.post(`${import.meta.env.VITE_Base_Url}/auth/signup`, {
         username,
         password,
         email,

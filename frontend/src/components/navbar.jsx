@@ -1,10 +1,10 @@
 import axios from "axios";
-// import React, { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 const Navbar = (props) => {
+
   const handleLogout = async () => {
-    const remove = await axios.get("http://localhost:3000/auth/logout", {
+    const remove = await axios.get(`${import.meta.env.VITE_Base_Url}/auth/logout`, {
       withCredentials: true,
     });
     if (remove.status == 200) {

@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import ConnectionModal from "../components/modal";
 
 const ModalCont = createContext();
-const socket = io("http://localhost:3000");
+const socket = io(import.meta.env.VITE_Base_Url);
 
 const Home = () => {
   const [username, setUsername] = useState("loading...");

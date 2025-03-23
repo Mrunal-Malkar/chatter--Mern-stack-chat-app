@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { NavLink, useSearchParams } from "react-router";
 
 const Login = () => {
@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault();
     try {
       let res = await axios.post(
-        "http://localhost:3000/auth/login",
+        `${import.meta.env.VITE_Base_Url}/auth/login`,
         {
           email: email,
           password: password,
