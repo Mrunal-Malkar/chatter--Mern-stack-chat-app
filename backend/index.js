@@ -259,5 +259,5 @@ app.get("/", checkUser, (req, res) => {
 });
 
 server.listen(port, () => {
-  console.log("sever is running on port", PORT);
+  console.log("sever is running on port", port);
 });
