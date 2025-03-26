@@ -155,7 +155,7 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = 3000;
+const port = process.env.PORT || 4000;
 
 app.use("/auth", authRoute);
 app.use("/action", actionRouter);
@@ -258,6 +258,6 @@ app.get("/", checkUser, (req, res) => {
   res.status(200).json({ message: "User is authenticated" });
 });
 
-server.listen(PORT, () => {
+server.listen(port, () => {
   console.log("sever is running on port", PORT);
 });
