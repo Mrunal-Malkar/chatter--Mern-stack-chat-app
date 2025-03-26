@@ -14,14 +14,16 @@ export const signUpController = async (req, res) => {
 
     const checkUser = await User.findOne({ email: email });
     if (checkUser) {
-      console.log("user already exits")
-      return res.status(404).json({ error: "user already exist with that gmail" });
+      console.log("user already exits");
+      return res
+        .status(404)
+        .json({ error: "user already exist with that gmail" });
     }
-    
+
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
     const securedPassword = await bcrypt.hash(password, salt);
-  
+
     const newUser = await User.create({
       username: username,
       email: email,
@@ -32,13 +34,13 @@ export const signUpController = async (req, res) => {
     const Token = await jwt.sign({ id: newUser._id }, process.env.SECRETKEY, {
       expiresIn: "48h",
     });
-    
+
     res.cookie("token", Token, {
       httpOnly: true,
       sameSite: "Strict",
       maxAge: 1000 * 60 * 60 * 48,
     });
-  
+
     return res.status(200).json({ message: "succesfully signed up!" });
   } catch (err) {
     console.log("Authentication error:", err);
@@ -71,7 +73,8 @@ export const LogInManager = async (req, res) => {
 
     res.cookie("token", Token, {
       httpOnly: true,
-      sameSite: "Strict",
+      secure: true, 
+      sameSite: "None",
       maxAge: 1000 * 60 * 60 * 48,
     });
     console.log("checked from login and setted the cookie:", Token);
