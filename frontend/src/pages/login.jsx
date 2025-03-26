@@ -29,7 +29,7 @@ const Login = () => {
         res.error || "Invalid login"
       }`);
     } catch (err) {
-      window.location.href = `/login?error=${err.response.data.error}`;
+      window.location.href = `/login?error=${err.response.data.error || err.response.data || err.response || err}`;
     }
   };
 

@@ -10,7 +10,7 @@ const Navbar = (props) => {
     if (remove.status == 200) {
       toast.success("successfully loged out!");
       setTimeout(() => {
-        window.location.href = "/";
+        return window.location.href = "/";
       }, 1000);
     } else {
       toast.error("unable to logout");
