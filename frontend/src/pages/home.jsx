@@ -199,7 +199,7 @@ const Home = () => {
 
             {/* for mobile */}
             {receiver ? (
-              <div className="w-full h-full bg-[#2D3047] flex flex-col md:hidden">
+              <div className="w-full h-full bg-[#2D3047] text-white flex flex-col md:hidden">
                 {/* the div at top for info of person user is chatting with*/}
                 <div className="min-h-[9%] bg-gray-700 gap-x-4 flex p-1 items-center justify-start">
                   <div onClick={() => setReceiver(null)} className="p-1">
@@ -221,7 +221,7 @@ const Home = () => {
                 {/* end of top div for info */}
 
                 {/* the middle div for messages */}
-                <div className="min-h-[83%] max-h-[85%]">
+                <div className="min-h-[83%] max-h-[85%] text-white">
                   {messages.length > 0 ? (
                     <div className="flex flex-col gap-y-7 h-full overflow-auto w-full overscroll-contain">
                       {messages.map((msg) => {
@@ -254,7 +254,7 @@ const Home = () => {
                 {/* end of middle div for messages */}
 
                 {/* the div at the bottom for input */}
-                <div className="min-h-[8%] bg-gray-700 flex justify-start items-center p-2 text-xl">
+                <div className="min-h-[8%] bg-gray-700 text-white flex justify-start items-center p-2 text-xl">
                   <div className="min-w-[5%] max-w-[5%] flex justify-center items-center">
                     <i className="fa-solid fa-plus text-2xl"></i>
                   </div>
@@ -345,7 +345,7 @@ const Home = () => {
 
             {/* start of second inner div for md+ */}
             {receiver ? (
-              <div className="w-4/6 h-full bg-[#2D3047] md:flex flex-col hidden">
+              <div className="w-4/6 h-full bg-[#2D3047] text-white md:flex flex-col hidden">
                 {/* the div at top for info of person user is chatting with*/}
                 <div className="min-h-[9%] bg-gray-700 gap-x-4 flex p-1 items-center justify-start">
                   <div className="min-h-[60px] max-h-[60px] min-w-[60px] max-w-[60px] circulardiv bg-gray-800 flex justify-center items-center">
