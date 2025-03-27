@@ -223,28 +223,40 @@ const Home = () => {
                 {/* the middle div for messages */}
                 <div className="min-h-[83%] max-h-[85%] text-white">
                   {messages.length > 0 ? (
-                    <div className="flex flex-col gap-y-7 h-full overflow-auto w-full overscroll-contain">
-                      {messages.map((msg) => {
-                        return (
+                    <div className="flex flex-col gap-y-7 p-8 h-full overflow-auto w-full text-xl text-gray-50">
+                    {messages.map((msg) => {
+                      return (
+                        <div
+                          onClick={yo}
+                          key={msg._id || msg.content}
+                          className={
+                            msg.sender.email
+                              ? msg.sender.email == email
+                                ? "w-full flex justify-end align-middle "
+                                : "w-full flex justify-start align-middle"
+                              : msg.sender == email
+                              ? "w-full flex justify-end align-middle"
+                              : "w-full flex justify-start align-middle"
+                          }
+                        >
                           <div
-                            onClick={yo}
-                            key={msg._id || msg.content}
                             className={
                               msg.sender.email
                                 ? msg.sender.email == email
-                                  ? "max-w-1/3 bg-gray-900 h-min"
-                                  : "max-w-1/3 bg-gray-700 h-min"
+                                  ? "max-w-[45%] bg-gray-900 h-min p-2 rounded-l-2xl rounded-tr-2xl "
+                                  : "max-w-[45%] rounded-r-2xl rounded-tl-2xl bg-gray-700 h-min p-2"
                                 : msg.sender == email
-                                ? "max-w-1/3 bg-gray-900 h-min"
-                                : "max-w-1/3 bg-gray-700 h-min"
+                                ? "rounded-l-2xl max-w-[45%] bg-gray-900 h-min p-2"
+                                : "max-w-[45%] bg-gray-700 rounded-r-2xl rounded-tl-2xl h-min p-2"
                             }
                           >
                             {msg.content}
                           </div>
-                        );
-                      })}
-                      <div ref={scrolldiv} />
-                    </div>
+                        </div>
+                      );
+                    })}
+                    <div ref={scrolldiv} />
+                  </div>
                   ) : (
                     <div className="flex justify-between align-middle items-center">
                       <h1>Start the Convo💬</h1>
