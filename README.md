@@ -1,6 +1,8 @@
 🚀 ChAtTeR - Real-Time Chat Application
 ChAtTeR is a real-time chat application built using the MERN stack and Socket.io. It enables seamless messaging, allowing users to send and receive messages instantly.
 
+[backend is hosted free -> so it needs to be refreshed for handling request from frontend after a long period of unvisited time. if you want to see the live preview start the app on localhost by entering env variables of your MongoDB or reach me so that I can start the backend for you to see live preview.]
+
 check it out-
 https://chatter-mern-stack-chat-app.vercel.app/
 
