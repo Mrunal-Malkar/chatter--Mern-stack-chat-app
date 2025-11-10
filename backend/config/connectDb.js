@@ -5,8 +5,8 @@ dotenv.config()
 
 export const connectDb=async()=>{
 try{
- 
-    await mongoose.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_DB_PASSWORD}@chattercluster.x6zob.mongodb.net/`);
+
+    await mongoose.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_DB_PASSWORD}@chattercluster.x6zob.mongodb.net/`)
     console.log("connected to mongoose");
 
 }catch(err){

@@ -13,6 +13,7 @@ import Message from "./models/message.model.js";
 
 const app = express();
 app.use(cors({ origin:"https://chatter-mern-stack-chat-app.vercel.app", credentials: true,methods: "GET,HEAD,PUT,PATCH,POST,DELETE"}));
+// app.use(cors({ origin:"http://localhost:5173", credentials: true,methods: "GET,HEAD,PUT,PATCH,POST,DELETE"}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +21,7 @@ app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 
 dotenv.config();
+// trigger the database connection
 connectDb();
 
 const server = http.createServer(app);
@@ -155,7 +157,7 @@ io.on("connection", (socket) => {
   });
 });
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 3000;
 
 app.use("/auth", authRoute);
 app.use("/action", actionRouter);
