@@ -4,7 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 const Navbar = (props) => {
 
   const handleLogout = async () => {
-    const remove = await axios.get(`${import.meta.env.VITE_Base_Url}/auth/logout`, {
+    const remove = await axios.get(`${import.meta.env.VITE_BASE_URL}/auth/logout`, {
       withCredentials: true,
     });
     if (remove.status == 200) {

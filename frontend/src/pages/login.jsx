@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault();
     try {
       let res = await axios.post(
-        `${import.meta.env.VITE_Base_Url}/auth/login`,
+        `${import.meta.env.VITE_BASE_URL}/auth/login`,
         {
           email: email,
           password: password,
@@ -24,7 +24,8 @@ const Login = () => {
       if (res.status == 200) {
         return (window.location.href = `/`);
       }
-
+console.log("response at login:",res)
+      
       return (window.location.href = `/login?error=${
         res.error || "Invalid login"
       }`);

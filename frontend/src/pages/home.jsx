@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import ConnectionModal from "../components/modal";
 
 const ModalCont = createContext();
-const socket = io(import.meta.env.VITE_Base_Url);
+const socket = io(import.meta.env.VITE_BASE_URL);
 
 const Home = () => {
   const [username, setUsername] = useState("loading...");
@@ -18,7 +18,8 @@ const Home = () => {
   const [email, setEmail] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [receiver, setReceiver] = useState(null);
-
+  
+  const inputref=useRef();
   const scrolldiv = useRef();
 
   useEffect(() => {
@@ -45,7 +46,7 @@ const Home = () => {
 
   const GetUser = async () => {
     try {
-      const user = await axios.get(`${import.meta.env.VITE_Base_Url}/getuser`, {
+      const user = await axios.get(`${import.meta.env.VITE_BASE_URL}/getuser`, {
         withCredentials: true,
       });
       setUsername(user.data.user.username);
@@ -72,6 +73,7 @@ const Home = () => {
         message: message,
       };
       socket.emit("msgsent", details);
+      setMessage("");
     } else {
       toast.error("please enter message to send!");
     }
@@ -99,7 +101,7 @@ const Home = () => {
         socket.emit("register", email);
         let fetch = async () => {
           let response = await axios.post(
-            `${import.meta.env.VITE_Base_Url}/getMessages`,
+            `${import.meta.env.VITE_BASE_URL}/getMessages`,
             { receiver: receiver },
             { withCredentials: true }
           );
@@ -159,7 +161,7 @@ const Home = () => {
                     <div
                       key={val._id}
                       onClick={() => setReceiver(val)}
-                      className="min-h-[80px] bg-gray-700 m-2 flex justify-start items-center p-1"
+                      className="min-h-[80px] bg-gray-700 m-2 flex rounded-3xl justify-start items-center p-1"
                     >
                       <div className="min-w-[70px] bg-blue-500 min-h-[70px] max-w-[70px] max-h-[70px] circulardiv">
                         <img
@@ -272,12 +274,19 @@ const Home = () => {
                   </div>
                   <input
                     type="text"
+                    ref={inputref}
                     placeholder="Type a message"
+                    onKeyDown={(e)=>{
+                      if(e.key=="Enter"){
+                        handleSend();
+                      }
+                    }}
                     onChange={(e) => setMessage(e.target.value)}
+                    value={message}
                     className="min-w-[90%] ps-3 max-w-[90%] h-full rounded-xl outline-none m-0.5 border-2 border-gray-400"
                   />
                   <div
-                    onClick={handleSend}
+                    onClick={()=>{handleSend() }}
                     className="min-w-[5%] max-w-[5%] flex justify-center items-center"
                   >
                     <i className="fa-solid fa-arrow-up text-2xl"></i>
@@ -313,7 +322,7 @@ const Home = () => {
                       <div
                         key={val._id}
                         onClick={() => setReceiver(val)}
-                        className="min-h-[80px] bg-gray-700 m-2 flex justify-start items-center p-1"
+                        className="min-h-[80px] bg-gray-700 m-2 flex justify-start items-center p-1 rounded-3xl"
                       >
                         <div className="min-w-[70px] bg-blue-500 min-h-[70px] max-w-[70px] max-h-[70px] circulardiv">
                           <img
@@ -429,6 +438,8 @@ const Home = () => {
                     type="text"
                     placeholder="Type a message"
                     onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={(e)=>{ if(e.key=="Enter"){ handleSend(); } }}
+                    value={message}
                     className="min-w-[90%] ps-3 max-w-[90%] h-full rounded-xl outline-none border-2 border-gray-400"
                   />
                   <div

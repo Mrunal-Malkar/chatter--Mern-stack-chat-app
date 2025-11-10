@@ -19,7 +19,7 @@ const ConnectionModal = () => {
   const handleAvailable = async () => {
     try {
       const availableContacts = await axios.get(
-        `${import.meta.env.VITE_Base_Url}/getAvailable`,
+        `${import.meta.env.VITE_BASE_URL}/getAvailable`,
         { withCredentials: true }
       );
       if (availableContacts) {
@@ -34,7 +34,7 @@ const ConnectionModal = () => {
   const handleRequested = async () => {
     try {
       const getRequestedContacts = await axios.get(
-        `${import.meta.env.VITE_Base_Url}/getRequested`
+        `${import.meta.env.VITE_BASE_URL}/getRequested`
       ,{withCredentials:true});
       if (getRequestedContacts.status == 200) {
         setRequestSent(getRequestedContacts.data.contacts);
@@ -48,7 +48,7 @@ const ConnectionModal = () => {
   const handleConnect = async (id) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_Base_Url}/action/reqconnect`,
+        `${import.meta.env.VITE_BASE_URL}/action/reqconnect`,
         { receiverId: id },
         { withCredentials: true }
       );
@@ -64,7 +64,7 @@ const ConnectionModal = () => {
 
   const handleAccept=async(id)=>{
     try{
-      let response=await axios.post(`${import.meta.env.VITE_Base_Url}/action/reqaccept`,{id:id},{withCredentials:true});
+      let response=await axios.post(`${import.meta.env.VITE_BASE_URL}/action/reqaccept`,{id:id},{withCredentials:true});
       if(response.status==200){
         toast("sucessfully accepted request!");
         handleRequested();
@@ -131,7 +131,7 @@ const ConnectionModal = () => {
           {send ? (
             <div className="flex flex-col h-5/6">
               <div className="w-full p-2 md:block h-1/12 hidden lg:text-2xl text-lg">
-                <h1>Connect with people's</h1>
+                <h1>Connect with people&apos;s</h1>
               </div>
               <div className="w-full flex flex-col p-2 overflow-auto h-11/12 rounded-b-xl">
                 {/* the person to send req div */}
